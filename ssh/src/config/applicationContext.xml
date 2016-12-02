@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 配置数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+		<property name="username" value="scott"/>
+		<property name="password" value="123456"/>
+	</bean>
+	
+	<!-- 配置sessionFactory工厂 -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<!-- 配置HIBERNATE的HBM映射文件 -->
+		<property name="mappingResources">
+			<list>
+				<value>com/ssh/entity/Student.hbm.xml</value>
+			</list>
+		</property>
+		<!-- 配置HIbernate的其他属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<!-- 配置方言 -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+				<!-- 配置是否显示SQL语句 -->
+				<prop key="show_sql">true</prop>
+			</props>
+		</property>
+	</bean> 
+          
+	
+	<!-- 配置事务管理类HIBERNATE的事务管理-->
+        <bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        	<property name="sessionFactory" ref="sessionFactory"/>
+        </bean>
+        
+        
+        <!-- 通过声明式事务标签来配置事务通知 -->
+        <tx:advice id="txAdvice" transaction-manager="txManager">
+        	<!-- 规定哪些方法执行的时候需要进行事务管理 -->
+        	<tx:attributes>
+        	    <tx:method name="query" propagation="SUPPORTS" read-only="true"/>
+        	    <tx:method name="find" propagation="SUPPORTS" read-only="true"/>
+        		<tx:method name="insert*" propagation="REQUIRES_NEW"/>
+        		<tx:method name="add*" propagation="REQUIRES_NEW"/>
+        		<tx:method name="update*" propagation="REQUIRED"/>
+        		<tx:method name="delete*" propagation="REQUIRED"/>
+        		<tx:method name="select" propagation="REQUIRED"/>
+        	</tx:attributes>
+        </tx:advice>
+       
+       <!-- 通过aop将通知和具体的核心业务关联起来 -->
+        <aop:config proxy-target-class="true">
+        	<aop:pointcut expression="execution(* com.ssh.serviceimpl.*.*(..))" id="txPoint"/>
+        	<aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+        </aop:config>
+
+</beans>

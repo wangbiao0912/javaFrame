@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssm.mapper.IStudentMapper">
+	
+	
+	<!-- （分页）查询所有学生的信息 -->
+	<select id="selectStudentAll" resultType="com.ssm.entity.Student">
+		select * from Student
+	</select>
+	
+	<!-- 查询学生的所有条数 -->
+	<select id="queryTotal" resultType="int" >
+		select count(*) as num from Student
+	</select>
+	
+	<!-- 查询所有学生 -->
+	<resultMap type="com.ssm.entity.Student" id="queryStudentAllMap">
+		<id column="stuId" property="stuId"/>
+		<result column="stuName" property="stuName"/>
+		<result column="stuRemark" property="stuRemark"/>
+		
+		<!--<association property="grade" javaType="com.ssm.entity.GradeInfo">
+			<id column="gradeid" property="gradeId"/>
+			<result column="gradename" property="gradeName"/>
+		</association>
+	--></resultMap>
+	
+	<select id="queryStudentInfoByPager" resultMap="queryStudentAllMap">
+		select * from ( select rownum row_num ,s.* from Student s order by 
+			s.stuId DESC) t where t.row_num between #{0} and #{1}
+	</select>
+	
+	
+	<!-- 根据班级编号进行查询 -->
+	<!--<select id="queryByclassid" parameterType="int" resultMap="queryAllMap">
+		select c.*,g.* from ClassInfo c inner join 
+			GradeInfo g on 
+			c.gradeid = g.gradeid where
+			c.classid = #{classid}
+	</select>
+	
+	
+	 添加班级信息
+	<insert id="addClass" parameterType="com.ssm.entity.ClassInfo" >
+		<selectKey resultType="int" keyProperty="classid"  order="BEFORE">
+			select classInfo_ids.nextVal 
+			from dual
+		</selectKey>
+		insert into ClassInfo values (
+			#{classid},
+			#{classname},
+			#{gradeid})
+		
+	</insert>
+	
+	 删除班级信息 
+	<delete id="deleteClass" parameterType="int">
+		delete from ClassInfo where classid = #{classid}
+	</delete>
+	
+	 修改班级信息 
+	<select id="updateClass" parameterType="com.ssm.entity.ClassInfo">
+		update ClassInfo set classname = #{classname} ,
+			gradeid = #{gradeid} where
+			classid = #{classid}
+	</select>
+	
+--></mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration 
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 如果mapper接口和mapper.xml（泛指sql映射文件）名称一致，并且在同
+	一个目录哈，就可以不需要配置sql映射文件的路径鸟 -->
+	<!--<mappers>
+		<mapper resource="com/ssm/mapper/DeptInfoMapper.xml"/>
+	</mappers>
+-->
+	
+	<mappers>
+		 
+		
+		
+	</mappers>
+	
+</configuration>

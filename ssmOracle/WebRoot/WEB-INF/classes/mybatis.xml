@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 为实体类设置别名(简称) -->
+	<typeAliases>
+		
+		<typeAlias alias="UserInfo" type="com.ssm.entity.UserInfo" />
+		
+	</typeAliases>
+
+	<!-- 配置拦截器插件用来分页 -->
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageHelper">
+			<property name="dialect" value="oracle" />
+			<property name="rowBoundsWithCount" value="true" />
+			<property name="pageSizeZero" value="true" />
+			<property name="reasonable" value="false" />
+			<property name="params" value="pageNum=start;pageSize=limit;" />
+			<property name="supportMethodsArguments" value="true" />
+			<property name="returnPageInfo" value="check" />
+		</plugin>
+	</plugins>
+</configuration>

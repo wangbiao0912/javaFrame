@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+        
+    <!-- 开启扫描器，进行对相应包的扫描 -->    
+    <context:component-scan base-package="com.ssm"/>    
+    
+    <!-- 配置并开启事务驱动 -->    
+	<mvc:annotation-driven/>  
+  
+  
+  	<!-- 配置数据源 -->
+  	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	  	<property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>
+	    	<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+	    	<property name="user" value="scott"/>
+	    	<property name="password" value="123456"/>
+	  </bean>
+	  
+	<!-- 配置sqlsessionfactory 工厂，类似于Hibernate中的sessionFactory工厂-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 注入dataSource -->
+		<property name="dataSource" ref="dataSource"/>
+		
+		<!-- 向 sqlSessionFactory提供mybatis的配置文件
+			如果是以面向接口来进行配置开发，则不需要此配置，因此可以不用配置mybatis.xml文件
+		-->
+		<property name="configLocation" value="classpath:config/mybatis.xml"/>
+	</bean>
+	
+	 
+	<!-- 为了改决这个不科学的问题，我们要使用扫描mapper的方式来配置所有的mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!--  提供sqlSessionFactory  -->
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+		<!-- 为我们的mapper扫描器提供需要扫描的包，如果有多个包用逗号隔开 -->
+		<property name="basePackage" value="com.ssm.mapper"/>
+	</bean>
+</beans>

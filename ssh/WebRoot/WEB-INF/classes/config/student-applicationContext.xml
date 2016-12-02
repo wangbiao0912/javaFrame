@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+        
+ 		<bean id="studentDao" class="com.ssh.daoimpl.StudentDaoImpl">
+ 			<property name="sessionFactory" ref="sessionFactory"/>
+ 		</bean>
+ 		<bean id="studentService" class="com.ssh.serviceimpl.StudentServiceImpl">
+ 			<property name="stuDao" ref="studentDao"/>
+ 		</bean>
+ 		<bean id="studentAction" class="com.ssh.action.StudentAction">
+ 			<property name="stuService" ref="studentService"/>
+ 		</bean>
+ 		
+</beans>
